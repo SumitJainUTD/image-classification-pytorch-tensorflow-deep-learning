@@ -1,5 +1,4 @@
 import os
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -10,22 +9,22 @@ import torch.optim as optim
 class SimpleCNN(nn.Module):
     def __init__(self, data_classes_len):
         super(SimpleCNN, self).__init__()
-        self.conv1 = nn.Conv2d(3, 16, 3, 1)
-        self.conv2 = nn.Conv2d(16, 32, 3, 1)
-        self.fc1 = nn.Linear(32 * 30 * 30, 128)
+        self.conv1 = nn.Conv2d(3, 16, 3, 1) # First convolutional layer
+        self.conv2 = nn.Conv2d(16, 32, 3, 1) # Second convolutional layer
+        self.fc1 = nn.Linear(32 * 30 * 30, 128) # Fully connected layer
         self.fc2 = nn.Linear(128, data_classes_len)  # Number of classes
 
         self.model_folder_path = './model'
 
     def forward(self, x):
-        x = F.relu(self.conv1(x))
-        x = F.max_pool2d(x, 2, 2)
-        x = F.relu(self.conv2(x))
-        x = F.max_pool2d(x, 2, 2)
+        x = F.relu(self.conv1(x)) # Apply ReLU activation after first convolution
+        x = F.max_pool2d(x, 2, 2) # Apply max pooling with a 2x2 kernel
+        x = F.relu(self.conv2(x)) # Apply ReLU activation after second convolution
+        x = F.max_pool2d(x, 2, 2)  # Apply max pooling with a 2x2 kernel
         x = x.view(-1, 32 * 30 * 30)  # Flatten the tensor
-        x = F.relu(self.fc1(x))
-        x = self.fc2(x)
-        return F.log_softmax(x, dim=1)
+        x = F.relu(self.fc1(x)) # Apply ReLU activation after fully connected layer
+        x = self.fc2(x) # Output to number of classes
+        return F.log_softmax(x, dim=1) # apply softmax
 
 # Input: torch.Size([1, 3, 128, 128])
 # After conv1: torch.Size([1, 16, 126, 126])
